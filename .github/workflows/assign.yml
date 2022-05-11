@@ -1,11 +1,13 @@
 on:
   issue:
     types:
-    - created
+    - opened
     
 jobs:
   assign:
-    - id: generate_token
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate_token
       # The default token provided doesn't have enough rights.
       #
       # https://github.com/tibdex/github-app-token works around this by
@@ -40,14 +42,14 @@ jobs:
       # Notice too: we've **forked** a copy of tibdex/github-app-token,
       # to avoid passing our tokens through potentially untrusted code.
       # Even if it is safe now, it might become malicious in the future.
-      uses: neuropoly/github-app-token@v1.5.1
-      with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_KEY }}
+        uses: neuropoly/github-app-token@v1.5.1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_KEY }}
         
-    - name: 'Auto-assign issue'
-      uses: pozil/auto-assign-issue@v1.5.0
-      with:
-        repo-token: ${{ steps.generate_token.outputs.token }}
-        teams: research-associates
-        numOfAssignee: 1
+      - name: 'Auto-assign issue'
+        uses: pozil/auto-assign-issue@v1.5.0
+        with:
+          repo-token: ${{ steps.generate_token.outputs.token }}
+          teams: research-associates
+          numOfAssignee: 1
