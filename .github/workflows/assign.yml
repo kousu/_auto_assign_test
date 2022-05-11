@@ -1,3 +1,7 @@
+# Randomly assign someone to handle an issue
+# This is different than Github's Issue Template 'assignees:' field
+# because it picks a single person, rather than a whole team
+
 on:
   issues:
     types:
@@ -7,6 +11,10 @@ jobs:
   assign:
     runs-on: ubuntu-latest
     steps:
+      - id: debug
+        run: |
+          echo '${{toJSON(github.event)}}'
+     
       - id: generate_token
       # The default token provided doesn't have enough rights.
       #
