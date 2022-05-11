@@ -1,0 +1,53 @@
+on:
+  issue:
+    types:
+    - created
+    
+jobs:
+  assign:
+    - id: generate_token
+      # The default token provided doesn't have enough rights.
+      #
+      # https://github.com/tibdex/github-app-token works around this by
+      # trading OAuth credentials (created at the Organization level) for
+      # a token credential (which can't be created except at the user level)
+      #
+      # Instead, someone could provide a personal token (https://github.com/settings/tokens)
+      # but they've whoever exposed their account to everyone in the organization,
+      # and the organization is exposed to DoS if the person ever leaves.
+      
+      # If you need to reconfigure this, know that you need to:
+      #
+      # 1. Create an OAuth credential at https://github.com/organizations/neuropoly/settings/apps
+      #   a. Set 'Name' = 'assign-onboarding'
+      #   b. Set 'Homepage URL' = 'https://github.com/neuropoly/onboarding'
+      #   c. Uncheck 'Webhook'
+      #   d. Set 'Repository permissions / Contents' = 'Access: Read & write'.
+      #   e. Set 'Where can this GitHub App be installed' = 'Only on this account'
+      # 2. Click 'Generate Private Key'; it will download a .pem file to your computer.
+      # 3. Store the credential in the repo at https://github.com/neuropoly/onboarding/settings/secrets/actions
+      #    a. Set 'APP_ID' = the app ID displayed on https://github.com/organizations/neuropoly/settings/apps/assign-onboarding
+      #    b. Set 'APP_KEY' = the contents of the .pem file it downloaded.
+      #    c. Now you can throw away the .pem file.
+      # 4. Install the app:
+      #    a. Go to https://github.com/organizations/neuropoly/settings/apps/assign-onboarding/installations
+      #    b. Click 'Install'
+      #    c. Pick this repo
+      #    d. Click 'Install' for real this time
+      #
+      # ref: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#authenticating-with-github-app-generated-tokens
+      #
+      # Notice too: we've **forked** a copy of tibdex/github-app-token,
+      # to avoid passing our tokens through potentially untrusted code.
+      # Even if it is safe now, it might become malicious in the future.
+      uses: neuropoly/github-app-token@v1.5.1
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_KEY }}
+        
+    - name: 'Auto-assign issue'
+      uses: pozil/auto-assign-issue@v1.5.0
+      with:
+        repo-token: ${{ steps.generate_token.outputs.token }}
+        teams: research-associates
+        numOfAssignee: 1
