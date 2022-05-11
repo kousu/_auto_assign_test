@@ -1,6 +1,7 @@
 # Randomly assign someone to handle an issue
-# This is different than Github's Issue Template 'assignees:' field
-# because it picks a single person, rather than a whole team
+# This is slightly different than using Issue Template 'assignees:':
+# it picks a single person, rather than a whole team or set of people,
+# hopefully making the responsibility clearer.
 
 on:
   issues:
