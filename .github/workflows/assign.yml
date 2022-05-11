@@ -33,7 +33,8 @@ jobs:
       #   a. Set 'Name' = 'assign-onboarding'
       #   b. Set 'Homepage URL' = 'https://github.com/neuropoly/onboarding'
       #   c. Uncheck 'Webhook'
-      #   d. Set 'Repository permissions / Contents' = 'Access: Read & write'.
+      #   e. Set 'Repository permissions / Issues' = 'Access: Read and write'.
+      #   d. Set 'Organization / Members' = 'Access: Read only'.
       #   e. Set 'Where can this GitHub App be installed' = 'Only on this account'
       # 2. Click 'Generate Private Key'; it will download a .pem file to your computer.
       # 3. Store the credential in the repo at https://github.com/neuropoly/onboarding/settings/secrets/actions
